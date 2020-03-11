@@ -8,17 +8,15 @@ import matplotlib.image as mpimg
 caminho_imagem = "fotos/curva/frame_1_0.518295454545.jpg"
 
 
-def processamento_imagem(caminho_imagem, qtd_pontos=10, salva_imagem=True):
-    """Função para o processamento de imagem necessário para detectar a posição da pista trajetópria 
+def processamento_imagem(caminho_imagem, qtd_pontos=10, salva_imagem="img.jpg"):
+    """Funcao que aplica todos os métodos de processamentos descrito na metodologia do TCC
     
     Argumentos:
-        caminho_imagem {string} -- caminho da imagem
+        caminho_imagem {string} -- caminha da imagem de entrada
     
     Argumentos chave:
-        salva_imagem {bool} -- Se True, salva a imagem processada (default: {True})
-    
-    Retorno:
-        [type] -- [description]
+        qtd_pontos {int} -- quantidade de pontos (default: {10})
+        salva_imagem {bool} -- caminho que deseja salvar imagem (exemplo: /Documents/img.jpg) (default: {True})
     """
 
     img_original = cv2.imread(caminho_imagem) # método carrega uma imagem de um arquivo.
@@ -26,13 +24,22 @@ def processamento_imagem(caminho_imagem, qtd_pontos=10, salva_imagem=True):
     img_suavizada = cv2.medianBlur(img_cinza,21) #Suavização dos ruídos
     _, img_binaria = cv2.threshold(img_suavizada, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU) #Aplicação do Threshold
     
-    pontos_trajetoria = pega_pontos_trajetoria(img_binaria, qtd_pontos, salva_imagem)
-    desenha_imagem(img_original, pontos_trajetoria)
+    pontos_trajetoria, pontos_centrais = pega_pontos_trajetoria(img_binaria, qtd_pontos)
+    desenha_imagem(img_original, pontos_trajetoria, salva_imagem)
 
-
-
-def pega_pontos_trajetoria(img_binaria, qtd_pontos=10, salva_imagem=True):
-  
+def pega_pontos_trajetoria(img_binaria, qtd_pontos=10):
+    """Funcao que pega os pontos da trajetoria
+    
+    Argumentos:
+        img_binaria {numpy.ndarray} -- imagem binária
+    
+    Argumentos chave:
+        qtd_pontos {int} -- quantidade de pontos/partes que deseja encontrar (default: {10})
+        salva_imagem {bool} -- [description] (default: {True})
+    
+    Returns:
+        [tuple] -- tupla com lista dos pontos da trajetória e lista dos pontos centrais
+    """
     altura, largura = img_binaria.shape
     altura_da_parte = altura//qtd_pontos
     pontos_trajetoria = []
@@ -44,9 +51,15 @@ def pega_pontos_trajetoria(img_binaria, qtd_pontos=10, salva_imagem=True):
             cX = int(M["m10"] / M["m00"]) #calculando o "centro de massa" horizontal, o vertical não é necessário calcular
         pontos_trajetoria.append((cX,(altura_da_parte)*ponto+altura_da_parte//2)) #armazenando as coordenadas da centroide da parte em questão
         pontos_centrais.append((largura//2,(altura_da_parte)*ponto+altura_da_parte//2))
-    return pontos_trajetoria
+    return (pontos_trajetoria,pontos_centrais)
 
-def desenha_imagem(img, pontos_trajetoria):
+def desenha_imagem(img, pontos_trajetoria, salva_imagem):
+    """[summary]
+    
+    Argumentos:
+        img {[type]} -- [description]
+        pontos_trajetoria {[type]} -- [description]
+    """
     print(pontos_trajetoria)
     altura, largura, _ = img.shape
     altura_da_parte = altura//len(pontos_trajetoria)
@@ -58,7 +71,7 @@ def desenha_imagem(img, pontos_trajetoria):
         imagem_desenhada = cv2.line(imagem_desenhada, (centro_largura,ponto[1]),(ponto),(0,255,0))
         distancia = (centro_largura+ponto[0]) #distancia entre ponto central e trajetoria
         imagem_desenhada = cv2.putText(imagem_desenhada, str(abs(ponto[0]-centro_largura)), (distancia//2,ponto[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0))
-    cv2.imwrite("img.jpg",imagem_desenhada)
+    cv2.imwrite(salva_imagem,imagem_desenhada)
 
 
 
