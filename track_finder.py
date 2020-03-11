@@ -16,7 +16,7 @@ def processamento_imagem(caminho_imagem, qtd_pontos=10, salva_imagem="img.jpg"):
     
     Argumentos chave:
         qtd_pontos {int} -- quantidade de pontos (default: {10})
-        salva_imagem {bool} -- caminho que deseja salvar imagem (exemplo: /Documents/img.jpg) (default: {True})
+        salva_imagem {string} -- caminho que deseja salvar imagem (exemplo: /Documents/img.jpg) 
     """
 
     img_original = cv2.imread(caminho_imagem) # método carrega uma imagem de um arquivo.
@@ -56,9 +56,11 @@ def pega_pontos_trajetoria(img_binaria, qtd_pontos=10):
 def desenha_imagem(img, pontos_trajetoria, salva_imagem):
     """[summary]
     
-    Argumentos:
-        img {[type]} -- [description]
-        pontos_trajetoria {[type]} -- [description]
+    Arguments:
+        img {numpy.ndarray} -- imagem original de entrada
+        pontos_trajetoria {[list]} -- lista com os pontos da trajetoria
+        salva_imagem {string} -- caminho que deseja salvar imagem (exemplo: /Documents/img.jpg) 
+        
     """
     print(pontos_trajetoria)
     altura, largura, _ = img.shape
