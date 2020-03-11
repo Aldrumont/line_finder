@@ -50,14 +50,10 @@ def desenha_imagem(img, pontos_trajetoria):
     print(pontos_trajetoria)
     altura, largura, _ = img.shape
     altura_da_parte = altura//len(pontos_trajetoria)
-    centro_largura = largura//2 
     imagem_desenhada = img[:] #criando uma cópia da imagem 
     for indice, ponto in enumerate(pontos_trajetoria):
         imagem_desenhada = cv2.circle(imagem_desenhada, ponto, 5, (0,0,255), -1) #marcando os pontos da trajetória em verde
-        imagem_desenhada = cv2.circle(imagem_desenhada, (centro_largura,ponto[1]), 5, (255,0,0), -1) #marcando os pontos centrais em azul
-        imagem_desenhada = cv2.line(imagem_desenhada, (centro_largura,ponto[1]),(ponto),(0,255,0))
-        distancia = (centro_largura+ponto[0]) #distancia entre ponto central e trajetoria
-        imagem_desenhada = cv2.putText(imagem_desenhada, str(distancia), (distancia//2,ponto[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0))
+        imagem_desenhada = cv2.circle(imagem_desenhada, (largura//2,(altura_da_parte)*indice+altura_da_parte//2), 5, (255,0,0), -1) #marcando os pontos centrais em azul
     cv2.imwrite("img.jpg",imagem_desenhada)
 
 
