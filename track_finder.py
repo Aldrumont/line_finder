@@ -57,7 +57,7 @@ def desenha_imagem(img, pontos_trajetoria):
         imagem_desenhada = cv2.circle(imagem_desenhada, (centro_largura,ponto[1]), 5, (255,0,0), -1) #marcando os pontos centrais em azul
         imagem_desenhada = cv2.line(imagem_desenhada, (centro_largura,ponto[1]),(ponto),(0,255,0))
         distancia = (centro_largura+ponto[0]) #distancia entre ponto central e trajetoria
-        imagem_desenhada = cv2.putText(imagem_desenhada, str(distancia), (distancia//2,ponto[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0))
+        imagem_desenhada = cv2.putText(imagem_desenhada, str(abs(ponto[0]-centro_largura)), (distancia//2,ponto[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0))
     cv2.imwrite("img.jpg",imagem_desenhada)
 
 
